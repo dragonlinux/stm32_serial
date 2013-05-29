@@ -56,19 +56,26 @@ int main(void)
 	 immunity against EMI/EMC *************************************************/
 
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD | RCC_APB2Periph_GPIOE, ENABLE);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 | RCC_APB2Periph_AFIO | RCC_APB2Periph_GPIOA, ENABLE);
+
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 | RCC_APB2Periph_AFIO, ENABLE);
+
+	/*引脚分配*/
 	GPIO_InitTypeDef GPIO_InitStruct;
 	GPIO_StructInit(&GPIO_InitStruct);
-	// Initialize USART1_Tx
+
+	// Initialize USART1_Tx 初始化发送
 	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_9 ;
 	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
 	GPIO_Init(GPIOA, &GPIO_InitStruct);
-	// Initialize USART1_RX
+
+	// Initialize USART1_RX 初始化接收
 	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_10 ;
 	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IN_FLOATING;
 	GPIO_Init(GPIOA, &GPIO_InitStruct);
+	/*引脚分配*/
 
+	/*串口初始化*/
 	USART_InitTypeDef USART_InitStructure;
 	// Initialize USART structure
 	USART_StructInit(&USART_InitStructure);
@@ -78,6 +85,8 @@ int main(void)
 	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 	USART_Init(USART1, &USART_InitStructure);
 	USART_Cmd(USART1, ENABLE);
+	/*串口初始化*/
+
 	setvbuf(stdin, NULL, _IONBF, 0);
 	setvbuf(stdout, NULL, _IONBF, 0);
 	setvbuf(stderr, NULL, _IONBF, 0);
@@ -93,34 +102,42 @@ int main(void)
 //	STM32vldiscovery_LEDInit(LED3);
 //	STM32vldiscovery_LEDInit(LED4);
 
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9 | GPIO_Pin_8 | GPIO_Pin_11 | GPIO_Pin_12;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-	uint8_t i=0;
+	uint8_t i = 0;
 	while (1)
 	{
-
 		while (USART_GetFlagStatus(USART1, USART_FLAG_TXE ) == RESET)
 			;
 		USART1 ->DR = 'a';
 
-		printf("%d ok! fine!\r\n",i++);
+		printf("%d ok! fine!\r\n", i++);
 
 		while (USART_GetFlagStatus(USART1, USART_FLAG_TXE ) == RESET)
 			;
 		USART1 ->DR = 'b';
-
 		GPIO_SetBits(GPIOC, GPIO_Pin_9 );
-		Delay(0x6FFFF);
+		//Delay(0xffff);
 		GPIO_ResetBits(GPIOC, GPIO_Pin_9 );
-		Delay(0x6FFFF);
-
-		GPIOC ->BSRR = GPIO_Pin_9;
-		Delay(0x6FFFF);
-		GPIOC ->BRR = GPIO_Pin_9;
-		Delay(0x6FFFF);
+		Delay(0xffff);
 
 		GPIO_SetBits(GPIOC, GPIO_Pin_8 );
-		Delay(0x6FFFF);
+		Delay(0xffff);
 		GPIO_ResetBits(GPIOC, GPIO_Pin_8 );
+		Delay(0xffff);
+
+		GPIOC ->BSRR = GPIO_Pin_9;	//SetBit
+		Delay(0xffff);
+		GPIOC ->BRR = GPIO_Pin_9;	//ResetBit
+		Delay(0xffff);
+
+		GPIO_SetBits(GPIOC, GPIO_Pin_11 );
+		Delay(0x6FFFF);
+		GPIO_ResetBits(GPIOC, GPIO_Pin_11 );
 		Delay(0x6FFFF);
 	}
 }
