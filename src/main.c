@@ -20,7 +20,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
-#include "STM32vldiscovery.h"
+//#include "STM32vldiscovery.h"
 #include <stdio.h>
 /** @addtogroup Examples
  * @{
@@ -90,26 +90,19 @@ int main(void)
 //	GPIO_Init(GPIOD, &GPIO_InitStructure);
 //	GPIO_Init(GPIOE, &GPIO_InitStructure);
 //	//RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD | RCC_APB2Periph_GPIOE, DISABLE);
-	STM32vldiscovery_LEDInit(LED3);
+//	STM32vldiscovery_LEDInit(LED3);
 //	STM32vldiscovery_LEDInit(LED4);
+
+
+	uint8_t i=0;
 	while (1)
 	{
-//		/* Turn on LD2 and LD3 */
-//		STM32vldiscovery_LEDOn(LED3);
-//		STM32vldiscovery_LEDOn(LED4);
-//		/* Insert delay */
-//		Delay(0x6FFFF);
-//
-//		/* Turn off LD3 and LD4 */
-//		STM32vldiscovery_LEDOff(LED3);
-//		STM32vldiscovery_LEDOff(LED4);
-//		/* Insert delay */
-//		Delay(0x6FFFF);
+
 		while (USART_GetFlagStatus(USART1, USART_FLAG_TXE ) == RESET)
 			;
 		USART1 ->DR = 'a';
 
-		printf("ok! I am fine!\n");
+		printf("%d ok! fine!\r\n",i++);
 
 		while (USART_GetFlagStatus(USART1, USART_FLAG_TXE ) == RESET)
 			;
